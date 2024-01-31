@@ -1,12 +1,16 @@
 package http
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 
+	"strings"
+
+	"github.com/gin-gonic/gin"
 	"github.com/kkrajkumar1198/blog-grpc/internal/blog/models"
 	pb "github.com/kkrajkumar1198/blog-grpc/internal/blog/protos/bin"
 	"github.com/kkrajkumar1198/blog-grpc/pkg/client"
-	"github.com/gin-gonic/gin"
 )
 
 // @title			HTTP Client for gRPC Client
@@ -40,7 +44,7 @@ func getPost(context *gin.Context) {
 	}
 
 	requestPB := &pb.GetPostRequest{
-		Id: id,
+		PostId: id,
 	}
 
 	response, err := client.ReadPost(requestPB)
@@ -49,7 +53,7 @@ func getPost(context *gin.Context) {
 		context.JSON(http.StatusInternalServerError, err)
 	}
 
-	if response.Post.Id == "" {
+	if response.Post.PostId == "" {
 		context.JSON(http.StatusNotFound, httpResponse{
 			Response: "Not found",
 		})
@@ -74,18 +78,21 @@ func postPost(context *gin.Context) {
 	postProtoModel := &pb.Post{}
 
 	err := context.BindJSON(&postModel)
+	if err != nil {
+		log.Println("Error:", err.Error())
 
+	}
 	postProtoModel.Title = postModel.Title
 	postProtoModel.Content = postModel.Content
 	postProtoModel.Author = postModel.Author
 	postProtoModel.PublicationDate = postModel.PublicationDate
-	postProtoModel.Tags = postModel.Tags
+	postProtoModel.Tags = strings.Split(postModel.Tags, " ")
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-
+	fmt.Println(postProtoModel)
 	response, err := client.CreatePost(postProtoModel)
 
 	if err != nil {
@@ -113,7 +120,7 @@ func postPost(context *gin.Context) {
 func deletePost(context *gin.Context) {
 	id := context.Param("id")
 	requestPB := &pb.DeletePostRequest{
-		Id: id,
+		PostId: id,
 	}
 
 	if id == "" {

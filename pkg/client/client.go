@@ -2,19 +2,22 @@ package client
 
 import (
 	"context"
+	"fmt"
 
 	pb "github.com/kkrajkumar1198/blog-grpc/internal/blog/protos/bin"
 )
 
 func CreatePost(post *pb.Post) (string, error) {
 	connection, err := grpcConnector()
-
+	fmt.Println(connection)
+	fmt.Println(post)
 	if err != nil {
 		return "", err
 	}
 	serviceClient := pb.NewBlogServiceClient(connection)
-
-	serverResponse, err := serviceClient.Create(context.Background(), &pb.Post{
+	fmt.Println(serviceClient)
+	fmt.Println(&post)
+	serverResponse, err := serviceClient.CreatePost(context.Background(), &pb.Post{
 		PostId:          post.PostId,
 		Title:           post.Title,
 		Content:         post.Content,
@@ -22,6 +25,7 @@ func CreatePost(post *pb.Post) (string, error) {
 		PublicationDate: post.PublicationDate,
 		Tags:            post.Tags,
 	})
+	fmt.Println(serverResponse)
 
 	if err != nil {
 		return "", err
@@ -42,7 +46,7 @@ func ReadPost(request *pb.GetPostRequest) (*pb.GetPostResponse, error) {
 
 	serviceClient := pb.NewBlogServiceClient(connection)
 
-	serverResponse, err := serviceClient.Get(context.Background(), request)
+	serverResponse, err := serviceClient.GetPost(context.Background(), request)
 
 	if err != nil {
 		return nil, err
@@ -60,7 +64,7 @@ func DeletePost(request *pb.DeletePostRequest) (*pb.DeletePostResponse, error) {
 
 	serviceClient := pb.NewBlogServiceClient(connection)
 
-	serverResponse, err := serviceClient.Delete(context.Background(), request)
+	serverResponse, err := serviceClient.DeletePost(context.Background(), request)
 
 	if err != nil {
 		return nil, err

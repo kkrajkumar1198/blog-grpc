@@ -1,22 +1,23 @@
 package data
 
 import (
-	"github.com/kkrajkumar1198/blog-grpc/internal/database"
+	"errors"
+
 	"github.com/kkrajkumar1198/blog-grpc/internal/blog/models"
+	database "github.com/kkrajkumar1198/blog-grpc/internal/databases"
 )
 
 var dBConnectionObject database.IConnection
 
 type PostDataAccess struct {
-	DB   database.IConnection
-	post models.Post
+	DB database.IConnection
 }
 
 func init() {
 	dBConnectionObject = database.SQLiteDB{}
 }
 
-func (p PostDataAccess) Create(post models.Post) string {
+func (p *PostDataAccess) Create(post models.Post) string {
 	connection, err := dBConnectionObject.GetConnection()
 
 	if err != nil {
@@ -28,7 +29,7 @@ func (p PostDataAccess) Create(post models.Post) string {
 	return "created"
 }
 
-func (p PostDataAccess) Read(postID string) (*models.Post, error) {
+func (p *PostDataAccess) Read(postID string) (*models.Post, error) {
 	connection, err := dBConnectionObject.GetConnection()
 
 	post := models.Post{}
@@ -41,14 +42,23 @@ func (p PostDataAccess) Read(postID string) (*models.Post, error) {
 	return &post, nil
 }
 
-func (p PostDataAccess) Delete(post *models.Post) (*models.Post, error) {
+func (p *PostDataAccess) Delete(postIDOrPost interface{}) (*models.Post, error) {
 	connection, err := dBConnectionObject.GetConnection()
-
+	var post models.Post
 	if err != nil {
 		return nil, err
 	}
 
-	connection.Delete(post)
+	switch v := postIDOrPost.(type) {
+	case string:
+		// Assuming postIDOrPost is the post ID
+		connection.Where("post_id = ?", v).Delete(&post)
+	case *models.Post:
+		// Assuming postIDOrPost is a *models.Post
+		connection.Where("post_id = ?", v.PostID).Delete(&post)
+	default:
+		return nil, errors.New("unsupported type for postIDOrPost")
+	}
 
 	return &models.Post{}, nil
 }

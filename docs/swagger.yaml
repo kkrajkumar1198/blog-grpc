@@ -1,0 +1,110 @@
+definitions:
+  main.httpResponse:
+    properties:
+      response:
+        type: string
+    type: object
+  models.Post:
+    properties:
+      author:
+        type: string
+      content:
+        type: string
+      post_id:
+        type: string
+      publication_date:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /post:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint is for creating posts
+      parameters:
+      - description: Creates post
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/models.Post'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.httpResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.httpResponse'
+      summary: Creates new post
+      tags:
+      - Posts
+  /post/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This endpoint is for deleting post by ID
+      parameters:
+      - description: uuid formatted ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.httpResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.httpResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.httpResponse'
+      summary: Deletes post by ID
+      tags:
+      - Posts
+    get:
+      consumes:
+      - application/json
+      description: Through a get request the id is sent to gRPC client
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Post'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.httpResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.httpResponse'
+      summary: Get posts from DB
+      tags:
+      - Posts
+swagger: "2.0"

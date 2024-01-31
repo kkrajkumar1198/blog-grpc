@@ -24,7 +24,7 @@ func TestCreateGRPC(t *testing.T) {
 
 	service := blog.Service{}
 
-	responseGrpc, err := service.Create(context.Background(), pbPost)
+	responseGrpc, err := service.CreatePost(context.Background(), pbPost)
 
 	if err != nil {
 		t.Errorf("error: %v", err)
@@ -60,7 +60,7 @@ func TestGetGRPC(t *testing.T) {
 
 	service := blog.Service{}
 
-	result, err := service.Get(context.Background(), request)
+	result, err := service.GetPost(context.Background(), request)
 
 	if err != nil {
 		t.Errorf("Error %s", err)
@@ -86,7 +86,7 @@ func TestDeleteGRPC(t *testing.T) {
 		Status: "deleted",
 	}
 
-	resultDelete, err := service.Delete(context.Background(), request)
+	resultDelete, err := service.DeletePost(context.Background(), request)
 
 	if err != nil {
 		t.Errorf("got %s", err)
@@ -109,7 +109,7 @@ func TestNotFoundBeforeDelete(t *testing.T) {
 		Status: "not found",
 	}
 
-	resultNotFound, err := service.Delete(context.Background(), requestFilled)
+	resultNotFound, err := service.DeletePost(context.Background(), requestFilled)
 
 	if err != nil {
 		t.Errorf("got %s", err)

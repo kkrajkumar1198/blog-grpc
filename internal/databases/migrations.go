@@ -1,9 +1,9 @@
-package database
+package databases
 
 import (
 	"log"
 
-	"github.com/kkrajkumar1198/blog-grpc/internal/person/models"
+	"github.com/kkrajkumar1198/blog-grpc/internal/blog/models"
 )
 
 type Migrations struct {
@@ -17,7 +17,7 @@ func (m Migrations) MigrateData() {
 		log.Println("Connection Error Migrations: ", conErr.Error())
 	}
 
-	connection.AutoMigrate(&models.Person{})
+	connection.AutoMigrate(&models.Post{})
 }
 
 func InitMigrations() {

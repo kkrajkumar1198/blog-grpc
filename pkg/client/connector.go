@@ -8,8 +8,8 @@ import (
 )
 
 func grpcConnector() (*grpc.ClientConn, error) {
-	serverAddress := os.Getenv("BLOG_SERVER_ADDRESS") // Change to your specific environment variable name for the blog server address
-	conn, err := grpc.Dial(serverAddress, grpc.WithInsecure())
+	serverAddress := os.Getenv("SERVER_ADDRESS")
+	conn, err := grpc.Dial(serverAddress)
 
 	if err != nil {
 		log.Println(err.Error())

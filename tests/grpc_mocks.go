@@ -21,10 +21,10 @@ func (m mockDataAccess) Read(id string) (*models.Post, error) {
 		Content:         "Sample Content",
 		Author:          "Sample Author",
 		PublicationDate: "2024-01-31",
-		Tags:            []string{"tag1", "tag2"},
+		Tags:            "tag1 ,tag2",
 	}, nil
 }
 
-func (m mockDataAccess) Delete(post *models.Post) (*models.Post, error) {
+func (m mockDataAccess) Delete(postIDOrPost interface{}) (*models.Post, error) {
 	return &models.Post{}, nil
 }
