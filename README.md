@@ -8,7 +8,7 @@ This project implements a basic blogging system using gRPC for communication. It
 
 - Go 1.19+
 - SQLite
-- HTTP client: POSTMAN, Insomnia, cURL
+- HTTP client: POSTMAN
 
 ## Running Locally
 
